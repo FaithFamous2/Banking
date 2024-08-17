@@ -24,7 +24,7 @@ export const formatDateTime = (dateString: Date) => {
     year: "numeric", // numeric year (e.g., '2023')
     month: "2-digit", // abbreviated month name (e.g., 'Oct')
     day: "2-digit", // numeric day of the month (e.g., '25')
-  }; 
+  };
 
   const dateOptions: Intl.DateTimeFormatOptions = {
     month: "short", // abbreviated month name (e.g., 'Oct')
