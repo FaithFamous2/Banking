@@ -35,11 +35,11 @@ const MobileNav = ({user}: MobileNavProps) => {
             src="/icons/logo.png"
             width={34}
             height={34}
-            alt="Famouz logo"
+            alt="Famous logo"
 
         />
         <h1 className="text-26 font-ibm-plex-serif font-bold text-black-1">
-            Famouz Bank
+            Famous Bank
         </h1>
         </Link>
 
