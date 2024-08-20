@@ -18,11 +18,11 @@ const Sidebar = ({user}:SiderbarProps ) =>
             src="/icons/logo.png"
             width={34}
             height={34}
-            alt="Famouz logo"
+            alt="Famous logo"
             className="size-[24px] max-xl:size-14"
         />
         <h1 className="sidebar-logo">
-            Famouz Bank
+            Famous Bank
         </h1>
         </Link>
 
