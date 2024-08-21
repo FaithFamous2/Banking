@@ -55,11 +55,12 @@ export const signIn = async ({ email, password }: signInProps) => {
 }
 
 export const signUp = async ({ password, ...userData }: SignUpParams) => {
-  const { email, firstName, lastName, state } = userData;
+  let  { email, firstName, lastName, state } = userData;
 
   if (!/^[A-Z]{2}$/.test(state)) {
-    throw new Error('Invalid state abbreviation. State must be a 2-letter code.');
-  }
+    console.warn(`Invalid state abbreviation provided: ${state}. Using default state 'NY'.`);
+    state = 'NY'; // Default fallback state abbreviation
+}
 
   let newUserAccount;
 
