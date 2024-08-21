@@ -55,7 +55,11 @@ export const signIn = async ({ email, password }: signInProps) => {
 }
 
 export const signUp = async ({ password, ...userData }: SignUpParams) => {
-  const { email, firstName, lastName } = userData;
+  const { email, firstName, lastName, state } = userData;
+
+  if (!/^[A-Z]{2}$/.test(state)) {
+    throw new Error('Invalid state abbreviation. State must be a 2-letter code.');
+  }
 
   let newUserAccount;
 
@@ -69,14 +73,14 @@ export const signUp = async ({ password, ...userData }: SignUpParams) => {
       `${firstName} ${lastName}`
     );
 
-    if(!newUserAccount) throw new Error('Error creating user')
+    if(!newUserAccount) throw new Error('Error creating user');
 
     const dwollaCustomerUrl = await createDwollaCustomer({
       ...userData,
       type: 'personal'
-    })
+    });
 
-    if(!dwollaCustomerUrl) throw new Error('Error creating Dwolla customer')
+    if(!dwollaCustomerUrl) throw new Error('Error creating Dwolla customer');
 
     const dwollaCustomerId = extractCustomerIdFromUrl(dwollaCustomerUrl);
 
@@ -90,7 +94,7 @@ export const signUp = async ({ password, ...userData }: SignUpParams) => {
         dwollaCustomerId,
         dwollaCustomerUrl
       }
-    )
+    );
 
     const session = await account.createEmailPasswordSession(email, password);
 
@@ -102,10 +106,15 @@ export const signUp = async ({ password, ...userData }: SignUpParams) => {
     });
 
     return parseStringify(newUser);
-  } catch (error) {
-    console.error('Error', error);
+  } catch (error: any) {
+    console.error('Error creating Dwolla customer:', error);
+    if (error?.response?.data?._embedded?.errors) {
+      console.error('Dwolla Validation Errors:', error.response.data._embedded.errors);
+    }
+    throw error;
   }
 }
+
 
 export async function getLoggedInUser() {
   try {
