@@ -45,7 +45,7 @@ export const getAccounts = async ({ userId }: getAccountsProps) => {
           type: accountData.type as string,
           subtype: accountData.subtype! as string,
           appwriteItemId: bank.$id,
-          shareableId: bank.shareableId,
+          sharaebleId: bank.shareableId,
         };
 
         return account;
@@ -116,7 +116,6 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
 
     // sort transactions by date such that the most recent transaction is first
       const allTransactions = [...transactions, ...transferTransactions].sort(
-      // const allTransactions =[ ...transferTransactions].sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     );
 
@@ -130,22 +129,26 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
 };
 
 // Get bank info
-export const getInstitution = async ({
-  institutionId,
-}: getInstitutionProps) => {
+// Get bank info
+export const getInstitution = async ({ institutionId }: getInstitutionProps) => {
   try {
     const institutionResponse = await plaidClient.institutionsGetById({
       institution_id: institutionId,
       country_codes: ["US"] as CountryCode[],
     });
 
-    const intitution = institutionResponse.data.institution;
+    if (!institutionResponse.data.institution) {
+      throw new Error("Institution not found");
+    }
 
-    return parseStringify(intitution);
+    const institution = institutionResponse.data.institution;
+    return parseStringify(institution);
   } catch (error) {
-    console.error("An error occurred while getting the accounts:", error);
+    console.error("An error occurred while getting the institution:", error);
+    throw new Error("Failed to fetch institution information."); // re-throw or return a custom error response
   }
 };
+
 
 // Get transactions
 export const getTransactions = async ({

@@ -13,10 +13,14 @@ interface CustomInput {
     name: FieldPath<z.infer<typeof formSchema>>,
     label: string,
     placeholder: string
+    readOnly?: boolean; // Optional prop to make the input read-only
+    defaultValue?: string; // Optional prop to set default value
+    type?: string;
+    className?: string;
 }
 
 
-const CustomInput = ({ control, name, label, placeholder }: CustomInput) => {
+const CustomInput = ({ control, name, label, placeholder, readOnly, defaultValue, type, className }: CustomInput) => {
     return (
         <FormField
             control={control}
@@ -30,8 +34,11 @@ const CustomInput = ({ control, name, label, placeholder }: CustomInput) => {
                         <FormControl>
                             <Input
                                 placeholder={placeholder}
-                                className='input-class'
-                                type={name === 'password' ? 'password' : 'text'}
+                                className={`${className} input-class`}
+                                // type={name === 'password' ? 'password' : 'text'}
+                                type={type || 'text'}
+                                readOnly={readOnly} // Set input as read-only if readOnly is true
+                                defaultValue={defaultValue} // Set default value if provided
                                 {...field}
 
                             />

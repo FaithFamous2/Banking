@@ -143,25 +143,31 @@ export const logoutAccount = async () => {
   }
 }
 
-export const createLinkToken = async (user: User) => {
+export const createLinkToken = async (user: User, accessToken?: string) => {
   try {
-    const tokenParams = {
+    const tokenParams: any = {
       user: {
         client_user_id: user.$id
       },
       client_name: `${user.firstName} ${user.lastName}`,
-      products: ['auth'] as Products[],
+      products: ['auth'] as Products[], // Specify your products
       language: 'en',
       country_codes: ['US'] as CountryCode[],
+    };
+
+    // If updating an existing item, include the access token for update mode
+    if (accessToken) {
+      tokenParams.access_token = accessToken;
     }
 
     const response = await plaidClient.linkTokenCreate(tokenParams);
 
-    return parseStringify({ linkToken: response.data.link_token })
+    return parseStringify({ linkToken: response.data.link_token });
   } catch (error) {
-    console.log(error);
+    console.log('Error creating Link Token:', error);
   }
-}
+};
+
 
 export const createBankAccount = async ({
   userId,
@@ -189,8 +195,15 @@ export const createBankAccount = async ({
     )
 
     return parseStringify(bankAccount);
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    if (error.response) {
+      console.error('Error response:', error.response.data);
+    } else if (error.request) {
+      console.error('No response received:', error.request);
+    } else {
+      console.error('Error creating bank account:', error.message);
+    }
+    throw error;
   }
 }
 
